@@ -1,0 +1,7 @@
+# requirements.txt
+
+Django==4.2.7
+Pillow==10.1.0
+python-decouple==3.8
+django-crispy-forms==2.1
+crispy-bootstrap4==2.0
