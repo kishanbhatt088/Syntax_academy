@@ -1,1 +1,1 @@
-# Syntaxacademy
+Syntax Academy is a modern Learning Management System (LMS) designed especially for programming education. It is built using Python Django and Bootstrap and provides a structured and interactive way for students to learn coding.Syntax Academy combines videos, notes, quizzes, and practical tasks in one place. It helps learners not just understand concepts but also apply them practically, making the learning process more effective and engaging.
