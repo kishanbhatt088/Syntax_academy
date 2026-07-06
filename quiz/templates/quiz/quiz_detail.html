@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ quiz.title }} - {{ course.title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'courses:course_list' %}">Courses</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'courses:course_detail' course.slug %}">{{ course.title }}</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'quiz:quiz_list' course.slug %}">Quizzes</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ quiz.title }}</li>
+                </ol>
+            </nav>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2>{{ quiz.title }}</h2>
+                </div>
+                <div class="card-body">
+                    <p>{{ quiz.description }}</p>
+                    
+                    <div class="mt-3">
+                        <p><strong>Number of Questions:</strong> {{ quiz.questions.count }}</p>
+                        <p><strong>Duration:</strong> {{ quiz.duration }} minutes</p>
+                        {% if quiz.pass_percentage %}
+                        <p><strong>Pass Percentage:</strong> {{ quiz.pass_percentage }}%</p>
+                        {% endif %}
+                    </div>
+
+                    <div class="mt-4">
+                        <a href="{% url 'quiz:take_quiz' course.slug quiz.id %}" class="btn btn-primary">
+                            Start Quiz
+                        </a>
+                        <a href="{% url 'quiz:quiz_list' course.slug %}" class="btn btn-secondary">
+                            Back to Quizzes
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

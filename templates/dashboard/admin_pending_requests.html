@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+
+{% block title %}Pending Requests - Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div data-aos="fade-right">
+            <h2 class="fw-bold">Pending Requests</h2>
+            <p class="text-muted">Manage new user registrations and course enrollment requests.</p>
+        </div>
+        <a href="{% url 'dashboard:admin' %}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-1"></i>Back to Dashboard
+        </a>
+    </div>
+
+    <!-- User Signup Requests -->
+    <div class="card shadow-sm mb-5" data-aos="fade-up">
+        <div class="card-header bg-white py-3">
+            <h5 class="fw-bold mb-0 text-primary">
+                <i class="fas fa-user-plus me-2"></i>New User Registrations ({{ pending_users.count }})
+            </h5>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light">
+                    <tr>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Full Name</th>
+                        <th>Joined At</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p_user in pending_users %}
+                    <tr>
+                        <td><strong>{{ p_user.username }}</strong></td>
+                        <td>{{ p_user.email }}</td>
+                        <td>{{ p_user.get_full_name|default:"-" }}</td>
+                        <td>{{ p_user.date_joined|date:"M d, Y H:i" }}</td>
+                        <td class="text-end">
+                            <div class="btn-group">
+                                <a href="{% url 'dashboard:admin_approve_user' p_user.id %}" class="btn btn-sm btn-success">
+                                    <i class="fas fa-check me-1"></i>Approve
+                                </a>
+                                <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteUser{{ p_user.id }}">
+                                    <i class="fas fa-times me-1"></i>Reject
+                                </button>
+                            </div>
+
+                            <!-- Reject Modal -->
+                            <div class="modal fade text-start" id="deleteUser{{ p_user.id }}" tabindex="-1">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Reject User Request</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Are you sure you want to reject and delete the account for <strong>{{ p_user.username }}</strong>?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                            <a href="{% url 'dashboard:admin_reject_user' p_user.id %}" class="btn btn-danger">Reject & Delete</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center py-4 text-muted">No pending user registrations.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Enrollment Requests -->
+    <div class="card shadow-sm" data-aos="fade-up" data-aos-delay="100">
+        <div class="card-header bg-white py-3">
+            <h5 class="fw-bold mb-0 text-success">
+                <i class="fas fa-graduation-cap me-2"></i>Course Enrollment Requests ({{ pending_enrollments.count }})
+            </h5>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light">
+                    <tr>
+                        <th>Student</th>
+                        <th>Course</th>
+                        <th>Requested At</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for enrollment in pending_enrollments %}
+                    <tr>
+                        <td>
+                            <strong>{{ enrollment.user.username }}</strong>
+                            <br><small class="text-muted">{{ enrollment.user.email }}</small>
+                        </td>
+                        <td>{{ enrollment.course.title }}</td>
+                        <td>{{ enrollment.enrolled_at|date:"M d, Y H:i" }}</td>
+                        <td class="text-end">
+                            <div class="btn-group">
+                                <a href="{% url 'dashboard:admin_approve_enrollment' enrollment.id %}" class="btn btn-sm btn-success">
+                                    <i class="fas fa-check me-1"></i>Approve
+                                </a>
+                                <a href="{% url 'dashboard:admin_reject_enrollment' enrollment.id %}" class="btn btn-sm btn-danger">
+                                    <i class="fas fa-times me-1"></i>Reject
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center py-4 text-muted">No pending enrollment requests.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

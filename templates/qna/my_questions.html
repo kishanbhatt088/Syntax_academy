@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}My Questions{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between mb-4">
+        <h2 class="fw-bold">My Questions</h2>
+        <a href="{% url 'qna:question_create' %}" class="btn btn-primary"><i class="fas fa-plus me-1"></i>Ask New Question</a>
+    </div>
+
+    {% for question in page_obj %}
+    <div class="card shadow-sm mb-3 border-0">
+        <div class="card-body p-4">
+            <div class="d-flex justify-content-between">
+                <div>
+                    <h5><a href="{% url 'qna:question_detail' question.pk %}" class="text-decoration-none">{{ question.title }}</a></h5>
+                    <small class="text-muted">{{ question.course.title }} • {{ question.created_at|timesince }} ago • {{ question.reply_count }} replies</small>
+                </div>
+                <span class="badge h-50
+                    {% if question.status == 'PENDING' %}bg-warning text-dark
+                    {% elif question.status == 'ANSWERED' %}bg-success
+                    {% else %}bg-secondary{% endif %}">
+                    {{ question.get_status_display }}
+                </span>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="text-center py-5">
+        <i class="fas fa-question-circle fa-4x text-muted mb-3"></i>
+        <h4 class="text-muted">You haven't asked any questions yet</h4>
+        <a href="{% url 'qna:question_create' %}" class="btn btn-primary mt-2">Ask Your First Question</a>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

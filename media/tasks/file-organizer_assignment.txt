@@ -1,0 +1,6 @@
+Syntax Academy - Assignment
+
+Task: File Organizer
+Description: Create a Python script that organizes files in a directory by their extension (images, documents, videos, etc.).
+
+Please complete this task and submit it through the student portal.

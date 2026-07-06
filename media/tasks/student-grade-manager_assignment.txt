@@ -1,0 +1,6 @@
+Syntax Academy - Assignment
+
+Task: Student Grade Manager
+Description: Build a program that manages student grades. Allow adding students, recording grades, calculating averages, and displaying results.
+
+Please complete this task and submit it through the student portal.

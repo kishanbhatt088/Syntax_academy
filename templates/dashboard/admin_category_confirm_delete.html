@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card border-danger shadow-sm">
+                <div class="card-header bg-danger text-white"><h4 class="mb-0"><i class="fas fa-exclamation-triangle me-2"></i>Delete Category</h4></div>
+                <div class="card-body">
+                    <p>Are you sure you want to delete <strong>{{ category.name }}</strong>?</p>
+                    <p class="text-danger"><small>This will also delete all courses in this category!</small></p>
+                    <form method="POST">{% csrf_token %}
+                        <button type="submit" class="btn btn-danger"><i class="fas fa-trash me-1"></i>Yes, Delete</button>
+                        <a href="{% url 'dashboard:admin_category_list' %}" class="btn btn-secondary ms-2">Cancel</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

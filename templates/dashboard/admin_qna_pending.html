@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}Pending Questions - Admin{% endblock %}
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between mb-4">
+        <h2 class="fw-bold"><i class="fas fa-clock text-warning me-2"></i>Pending Questions</h2>
+        <a href="{% url 'dashboard:admin_qna_list' %}" class="btn btn-outline-secondary">All Questions</a>
+    </div>
+
+    {% for question in questions %}
+    <div class="card shadow-sm mb-3">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <h5 class="fw-bold mb-1">{{ question.title }}</h5>
+                    <p class="text-muted mb-2">{{ question.content|truncatewords:50 }}</p>
+                    <small class="text-muted">
+                        <i class="fas fa-user me-1"></i>{{ question.user.username }}
+                        <span class="mx-2">•</span>
+                        <i class="fas fa-book me-1"></i>{{ question.course.title }}
+                        <span class="mx-2">•</span>
+                        <i class="fas fa-clock me-1"></i>{{ question.created_at|timesince }} ago
+                    </small>
+                </div>
+                <a href="{% url 'qna:question_detail' question.pk %}" class="btn btn-primary btn-sm">
+                    <i class="fas fa-reply me-1"></i>Reply
+                </a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="alert alert-success text-center py-5">
+        <i class="fas fa-check-circle fa-3x mb-3"></i>
+        <h4>No Pending Questions!</h4>
+        <p class="text-muted">All questions have been answered.</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

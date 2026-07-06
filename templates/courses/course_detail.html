@@ -1,0 +1,305 @@
+<!-- templates/courses/course_detail.html -->
+
+{% extends 'base.html' %}
+{% load static %}
+{% load course_tag %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="bg-dark text-white py-5">
+    <div class="container">
+        <nav aria-label="breadcrumb" class="mb-3">
+            <ol class="breadcrumb breadcrumb-dark">
+                <li class="breadcrumb-item"><a href="{% url 'courses:category_list' %}" class="text-light">Categories</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'courses:course_by_category' course.category.slug %}" class="text-light">{{ course.category.name }}</a></li>
+                <li class="breadcrumb-item active text-light">{{ course.title }}</li>
+            </ol>
+        </nav>
+        
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <span class="badge mb-3" style="background-color: {{ course.category.color }};">
+                    {{ course.category.name }}
+                </span>
+                <h1 class="display-5 fw-bold mb-3">{{ course.title }}</h1>
+                <p class="lead text-light opacity-75">{{ course.description }}</p>
+                
+                <div class="d-flex flex-wrap gap-4 mt-4">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-signal me-2 text-primary"></i>
+                        {{ course.get_difficulty_level_display }}
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-clock me-2 text-primary"></i>
+                        {{ course.estimated_duration }} hours
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-video me-2 text-primary"></i>
+                        {{ course.total_videos }} videos
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-file-alt me-2 text-primary"></i>
+                        {{ course.total_notes }} notes
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 text-lg-end mt-4 mt-lg-0">
+                {% if user.is_authenticated %}
+                    {% if is_enrolled %}
+                    <div class="mb-3">
+                        <span class="badge bg-success fs-6 py-2 px-3">
+                            <i class="fas fa-check me-1"></i>Enrolled
+                        </span>
+                    </div>
+                    <div class="progress mb-3" style="height: 10px;">
+                        <div class="progress-bar bg-success" role="progressbar" 
+                             style="width: {{ enrollment.progress_percentage }}%">
+                        </div>
+                    </div>
+                    <small class="text-light">{{ enrollment.progress_percentage }}% Complete</small>
+                    {% else %}
+                    <a href="{% url 'courses:enroll_course' course.slug %}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-user-plus me-2"></i>Enroll Now
+                    </a>
+                    {% endif %}
+                {% else %}
+                <a href="{% url 'accounts:login' %}?next={{ request.path }}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-sign-in-alt me-2"></i>Login to Enroll
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="row">
+        <!-- Main Content -->
+        <div class="col-lg-8">
+            <!-- Course Tabs -->
+            <ul class="nav nav-tabs mb-4" id="courseTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="videos-tab" data-bs-toggle="tab" 
+                            data-bs-target="#videos" type="button">
+                        <i class="fas fa-video me-1"></i>Videos ({{ videos|length }})
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="notes-tab" data-bs-toggle="tab" 
+                            data-bs-target="#notes" type="button">
+                        <i class="fas fa-file-alt me-1"></i>Notes ({{ notes|length }})
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="tasks-tab" data-bs-toggle="tab" 
+                            data-bs-target="#tasks" type="button">
+                        <i class="fas fa-tasks me-1"></i>Tasks ({{ tasks|length }})
+                    </button>
+                </li>
+            </ul>
+            
+            <div class="tab-content" id="courseTabContent">
+                <!-- Videos Tab -->
+                <div class="tab-pane fade show active" id="videos" role="tabpanel">
+                    {% for video in videos %}
+                    <div class="card border-0 shadow-sm mb-3">
+                        <div class="card-body d-flex align-items-center">
+                            <div class="video-icon bg-primary bg-opacity-10 rounded-circle p-3 me-3">
+                                <i class="fas fa-play text-primary"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1 fw-bold">{{ video.order }}. {{ video.title }}</h6>
+                                <small class="text-muted">
+                                    <i class="fas fa-clock me-1"></i>{{ video.duration }} min
+                                    {% if video.is_preview %}
+                                    <span class="badge bg-info ms-2">Preview</span>
+                                    {% endif %}
+                                </small>
+                            </div>
+                            {% if is_enrolled or video.is_preview %}
+                            <a href="{% url 'courses:video_watch' course.slug video.slug %}" 
+                               class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-play me-1"></i>Watch
+                            </a>
+                            {% else %}
+                            <span class="text-muted"><i class="fas fa-lock"></i></span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="text-center py-5 text-muted">
+                        <i class="fas fa-video-slash fa-3x mb-3"></i>
+                        <p>No videos available yet</p>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <!-- Notes Tab -->
+                <div class="tab-pane fade" id="notes" role="tabpanel">
+                    {% for note in notes %}
+                    <div class="card border-0 shadow-sm mb-3">
+                        <div class="card-body d-flex align-items-center">
+                            <div class="note-icon bg-success bg-opacity-10 rounded-circle p-3 me-3">
+                                <i class="fas fa-file-alt text-success"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1 fw-bold">{{ note.order }}. {{ note.title }}</h6>
+                                <small class="text-muted">
+                                    {{ note.content|truncatewords:10 }}
+                                </small>
+                            </div>
+                            {% if is_enrolled %}
+                            <a href="{% url 'courses:note_view' course.slug note.slug %}" 
+                               class="btn btn-sm btn-outline-success">
+                                <i class="fas fa-book-open me-1"></i>Read
+                            </a>
+                            {% else %}
+                            <span class="text-muted"><i class="fas fa-lock"></i></span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="text-center py-5 text-muted">
+                        <i class="fas fa-file-alt fa-3x mb-3"></i>
+                        <p>No notes available yet</p>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <!-- Tasks Tab -->
+                <div class="tab-pane fade" id="tasks" role="tabpanel">
+                    {% for task in tasks %}
+                    <div class="card border-0 shadow-sm mb-3">
+                        <div class="card-body d-flex align-items-center">
+                            <div class="task-icon bg-warning bg-opacity-10 rounded-circle p-3 me-3">
+                                <i class="fas fa-tasks text-warning"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1 fw-bold">{{ task.title }}</h6>
+                                <small class="text-muted">
+                                    <span class="badge bg-light text-dark me-2">{{ task.get_difficulty_display }}</span>
+                                    <i class="fas fa-clock me-1"></i>Est. {{ task.estimated_time }}h
+                                </small>
+                            </div>
+                            {% if is_enrolled %}
+                            <div class="d-flex flex-column align-items-end gap-2">
+                                <a href="{% url 'courses:task_download' course.slug task.slug %}" 
+                                   class="btn btn-sm btn-outline-warning">
+                                    <i class="fas fa-download me-1"></i>Download
+                                </a>
+                                
+                                {% with progress=task_progress|get_item:task.id %}
+                                    {% if progress and progress.is_completed %}
+                                        <div class="text-end">
+                                            <span class="badge bg-success">
+                                                <i class="fas fa-check-circle me-1"></i>Submitted
+                                            </span>
+                                            {% if progress.submission_file %}
+                                                <div class="mt-1">
+                                                    <small class="text-muted">
+                                                        <i class="fas fa-paperclip me-1"></i>{{ progress.submission_file|basename }}
+                                                    </small>
+                                                </div>
+                                            {% endif %}
+                                            <div class="mt-1">
+                                                <small class="text-muted" style="font-size: 0.75rem;">
+                                                    {{ progress.completed_at|date:"M d, Y H:i" }}
+                                                </small>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="collapse" 
+                                                data-bs-target="#submitForm{{ task.id }}">
+                                            <i class="fas fa-upload me-1"></i>Submit Task
+                                        </button>
+                                    {% endif %}
+                                {% endwith %}
+                            </div>
+                            {% else %}
+                            <span class="text-muted"><i class="fas fa-lock"></i></span>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Submission Form Collapse -->
+                        {% if is_enrolled %}
+                        <div class="collapse" id="submitForm{{ task.id }}">
+                            <div class="card-footer bg-light border-0">
+                                <form action="{% url 'courses:task_submission' course.slug task.slug %}" 
+                                      method="POST" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <div class="row align-items-center">
+                                        <div class="col-md-8">
+                                            <input type="file" name="submission_file" class="form-control form-control-sm" required>
+                                            <small class="text-muted">Upload your work (PDF, Image, or Zip)</small>
+                                        </div>
+                                        <div class="col-md-4 mt-2 mt-md-0 text-md-end">
+                                            <button type="submit" class="btn btn-sm btn-success">
+                                                Confirm Upload
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% empty %}
+                    <div class="text-center py-5 text-muted">
+                        <i class="fas fa-tasks fa-3x mb-3"></i>
+                        <p>No tasks available yet</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            {% if is_enrolled %}
+            <!-- Quizzes -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white">
+                    <h6 class="mb-0 fw-bold">
+                        <i class="fas fa-question-circle me-2 text-primary"></i>Quizzes
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <a href="{% url 'quiz:quiz_list' course.slug %}" class="btn btn-primary w-100">
+                        <i class="fas fa-play me-1"></i>Take Quizzes
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Prerequisites -->
+            {% if course.prerequisites %}
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white">
+                    <h6 class="mb-0 fw-bold">
+                        <i class="fas fa-list-check me-2 text-warning"></i>Prerequisites
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <p class="mb-0 text-muted">{{ course.prerequisites }}</p>
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- What You'll Learn -->
+            {% if course.learning_outcomes %}
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white">
+                    <h6 class="mb-0 fw-bold">
+                        <i class="fas fa-graduation-cap me-2 text-success"></i>What You'll Learn
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <p class="mb-0 text-muted">{{ course.learning_outcomes }}</p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

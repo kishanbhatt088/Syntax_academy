@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}User: {{ profile_user.username }}{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <a href="{% url 'dashboard:admin_users' %}" class="btn btn-outline-secondary mb-3"><i class="fas fa-arrow-left me-1"></i>Back to Users</a>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <i class="fas fa-user-circle fa-5x text-muted mb-3"></i>
+                    <h4>{{ profile_user.first_name }} {{ profile_user.last_name }}</h4>
+                    <p class="text-muted">@{{ profile_user.username }}</p>
+                    <p><i class="fas fa-envelope me-1"></i>{{ profile_user.email }}</p>
+                    <p><small class="text-muted">Joined: {{ profile_user.date_joined|date:"M d, Y" }}</small></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white"><h5 class="mb-0">Enrolled Courses</h5></div>
+                <div class="list-group list-group-flush">
+                    {% for enrollment in enrollments %}
+                    <div class="list-group-item d-flex justify-content-between">
+                        <span>{{ enrollment.course.title }}</span>
+                        <span class="badge bg-primary">{{ enrollment.progress_percentage|floatformat:0 }}%</span>
+                    </div>
+                    {% empty %}
+                    <div class="list-group-item text-muted">No enrollments</div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="card shadow-sm">
+                <div class="card-header bg-white"><h5 class="mb-0">Quiz Attempts</h5></div>
+                <div class="list-group list-group-flush">
+                    {% for attempt in quiz_attempts %}
+                    <div class="list-group-item d-flex justify-content-between">
+                        <span>{{ attempt.quiz.title }}</span>
+                        <span class="badge {% if attempt.is_passed %}bg-success{% else %}bg-danger{% endif %}">{{ attempt.score|floatformat:0 }}%</span>
+                    </div>
+                    {% empty %}
+                    <div class="list-group-item text-muted">No quiz attempts</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

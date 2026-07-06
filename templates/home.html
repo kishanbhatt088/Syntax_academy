@@ -1,0 +1,113 @@
+<!-- templates/home.html -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Syntax Academy - Learn Programming Online{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center min-vh-75">
+            <div class="col-lg-10 mx-auto text-center">
+                <h1 class="display-4 fw-bold mb-4" data-aos="fade-up">
+                    Master Programming with 
+                    <span class="text-primary">Syntax Academy</span>
+                </h1>
+                <p class="lead text-muted mb-4 mx-auto" style="max-width: 800px;" data-aos="fade-up" data-aos-delay="100">
+                    Learn coding through structured video courses, comprehensive notes, 
+                    interactive quizzes, and hands-on programming tasks. 
+                    Start your journey to becoming a professional developer today!
+                </p>
+                <div class="d-flex gap-3 flex-wrap justify-content-center" data-aos="fade-up" data-aos-delay="200">
+                    <a href="{% url 'accounts:register' %}" class="btn btn-primary btn-lg btn-animate">
+                        <i class="fas fa-rocket me-2"></i>Get Started Free
+                    </a>
+                    <a href="{% url 'courses:course_list' %}" class="btn btn-outline-dark btn-lg btn-animate">
+                        <i class="fas fa-book me-2"></i>Browse Courses
+                    </a>
+                </div>
+                <div class="mt-4">
+                    <div class="d-flex align-items-center justify-content-center gap-4 flex-wrap">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            <span>Free Access</span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            <span>Expert Content</span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            <span>Interactive Learning</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">How It Works</h2>
+            <p class="text-muted">Our structured approach to learning programming</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="100">
+                <div class="feature-card text-center p-4 bg-white rounded-3 shadow-sm h-100 hover-lift">
+                    <div class="feature-icon bg-primary bg-opacity-10 text-primary rounded-circle mx-auto mb-3">
+                        <i class="fas fa-play-circle fa-2x"></i>
+                    </div>
+                    <h5 class="fw-bold">Watch Videos</h5>
+                    <p class="text-muted mb-0">Learn concepts through high-quality video tutorials</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="200">
+                <div class="feature-card text-center p-4 bg-white rounded-3 shadow-sm h-100 hover-lift">
+                    <div class="feature-icon bg-success bg-opacity-10 text-success rounded-circle mx-auto mb-3">
+                        <i class="fas fa-file-alt fa-2x"></i>
+                    </div>
+                    <h5 class="fw-bold">Read Notes</h5>
+                    <p class="text-muted mb-0">Access comprehensive written documentation</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="300">
+                <div class="feature-card text-center p-4 bg-white rounded-3 shadow-sm h-100 hover-lift">
+                    <div class="feature-icon bg-warning bg-opacity-10 text-warning rounded-circle mx-auto mb-3">
+                        <i class="fas fa-question-circle fa-2x"></i>
+                    </div>
+                    <h5 class="fw-bold">Take Quizzes</h5>
+                    <p class="text-muted mb-0">Test your knowledge with interactive quizzes</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="400">
+                <div class="feature-card text-center p-4 bg-white rounded-3 shadow-sm h-100 hover-lift">
+                    <div class="feature-icon bg-danger bg-opacity-10 text-danger rounded-circle mx-auto mb-3">
+                        <i class="fas fa-tasks fa-2x"></i>
+                    </div>
+                    <h5 class="fw-bold">Complete Tasks</h5>
+                    <p class="text-muted mb-0">Practice with real programming assignments</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section py-5 bg-primary text-white">
+    <div class="container text-center">
+        <h2 class="fw-bold mb-3">Ready to Start Learning?</h2>
+        <p class="lead mb-4">Join thousands of students and start your programming journey today!</p>
+        <a href="{% url 'accounts:register' %}" class="btn btn-light btn-lg">
+            <i class="fas fa-user-plus me-2"></i>Create Free Account
+        </a>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+{% endblock %}

@@ -1,0 +1,6 @@
+Syntax Academy - Assignment
+
+Task: Library Management System
+Description: Build a complete library management system with OOP. Include book management, member management, borrowing, and returning books.
+
+Please complete this task and submit it through the student portal.

@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Quizzes - {{ course.title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Quizzes for {{ course.title }}</h2>
+            
+            {% if quizzes %}
+                <div class="list-group mt-4">
+                    {% for quiz in quizzes %}
+                    <a href="{% url 'quiz:quiz_detail' course.slug quiz.id %}" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">{{ quiz.title }}</h5>
+                            <small>{{ quiz.questions.count }} questions</small>
+                        </div>
+                        <p class="mb-1">{{ quiz.description|truncatewords:20 }}</p>
+                    </a>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="alert alert-info mt-4">
+                    No quizzes available for this course yet.
+                </div>
+            {% endif %}
+
+            <div class="mt-4">
+                <a href="{% url 'courses:course_detail' course.slug %}" class="btn btn-secondary">
+                    Back to Course
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

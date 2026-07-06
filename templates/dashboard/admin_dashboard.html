@@ -1,0 +1,349 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard - Syntax Academy{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div data-aos="fade-right">
+            <h2 class="fw-bold">Admin Dashboard</h2>
+            <p class="text-muted mb-0">Welcome back, {{ user.username }}!</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{% url 'dashboard:admin_export_full_system_csv' %}" class="btn btn-success btn-animate">
+                <i class="fas fa-file-download me-1"></i>Full System Report
+            </a>
+
+        </div>
+    </div>
+
+    <!-- Stats Row 1 -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="100">
+            <div class="card bg-primary text-white border-0 h-100 hover-lift">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h3 class="fw-bold mb-0">{{ stats.total_users }}</h3>
+                            <small>Total Students</small>
+                            <br><small class="opacity-75">+{{ stats.new_users_month }} this month</small>
+                        </div>
+                        <i class="fas fa-users fa-2x opacity-50"></i>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    <a href="{% url 'dashboard:admin_users' %}" class="text-white small">View All →</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="200">
+            <div class="card bg-success text-white border-0 h-100 hover-lift">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h3 class="fw-bold mb-0">{{ stats.published_courses }}</h3>
+                            <small>Published Courses</small>
+                            <br><small class="opacity-75">{{ stats.total_courses }} total</small>
+                        </div>
+                        <i class="fas fa-book fa-2x opacity-50"></i>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    <a href="{% url 'dashboard:admin_course_list' %}" class="text-white small">Manage →</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="300">
+            <div class="card bg-info text-white border-0 h-100 hover-lift">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h3 class="fw-bold mb-0">{{ stats.total_enrollments }}</h3>
+                            <small>Total Enrollments</small>
+                            <br><small class="opacity-75">{{ stats.total_videos }} videos</small>
+                        </div>
+                        <i class="fas fa-user-graduate fa-2x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="400">
+            <div class="card bg-danger text-white border-0 h-100 hover-lift">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h3 class="fw-bold mb-0">{{ stats.pending_users|add:stats.pending_enrollments }}</h3>
+                            <small>New Requests</small>
+                            <br><small class="opacity-75">{{ stats.pending_users }} users, {{ stats.pending_enrollments }} enrollments</small>
+                        </div>
+                        <i class="fas fa-clock fa-2x opacity-50"></i>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    <a href="{% url 'dashboard:admin_pending_requests' %}" class="text-white small">Manage →</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Row 2 (Shifted items) -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3" data-aos="fade-up" data-aos-delay="500">
+            <div class="card bg-warning text-white border-0 h-100 hover-lift">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h3 class="fw-bold mb-0">{{ stats.pending_questions }}</h3>
+                            <small>Pending Questions</small>
+                            <br><small class="opacity-75">{{ stats.answered_questions }} answered</small>
+                        </div>
+                        <i class="fas fa-question-circle fa-2x opacity-50"></i>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    <a href="{% url 'dashboard:admin_qna_pending' %}" class="text-white small">Reply →</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm text-center h-100">
+                <div class="card-body">
+                    <i class="fas fa-layer-group fa-2x text-primary mb-2"></i>
+                    <h4 class="mb-0">{{ stats.total_categories }}</h4>
+                    <small class="text-muted">Categories</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm text-center h-100">
+                <div class="card-body">
+                    <i class="fas fa-video fa-2x text-success mb-2"></i>
+                    <h4 class="mb-0">{{ stats.total_videos }}</h4>
+                    <small class="text-muted">Videos</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm text-center h-100">
+                <div class="card-body">
+                    <i class="fas fa-question fa-2x text-info mb-2"></i>
+                    <h4 class="mb-0">{{ stats.total_quizzes }}</h4>
+                    <small class="text-muted">Quizzes</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm text-center h-100">
+                <div class="card-body">
+                    <i class="fas fa-star fa-2x text-warning mb-2"></i>
+                    <h4 class="mb-0">{{ stats.avg_quiz_score|floatformat:0 }}%</h4>
+                    <small class="text-muted">Avg Quiz Score</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="card shadow-sm mb-4" data-aos="fade-up" data-aos-delay="500">
+        <div class="card-header bg-white">
+            <h6 class="fw-bold mb-0"><i class="fas fa-bolt me-2 text-warning"></i>Quick Actions</h6>
+        </div>
+        <div class="card-body">
+            <div class="d-flex flex-wrap gap-2">
+                <a href="{% url 'dashboard:admin_category_create' %}" class="btn btn-outline-primary btn-animate">
+                    <i class="fas fa-plus me-1"></i>Add Category
+                </a>
+                <a href="{% url 'dashboard:admin_course_create' %}" class="btn btn-outline-success btn-animate">
+                    <i class="fas fa-plus me-1"></i>Add Course
+                </a>
+                <a href="{% url 'dashboard:admin_category_list' %}" class="btn btn-outline-info btn-animate">
+                    <i class="fas fa-layer-group me-1"></i>Categories
+                </a>
+                <a href="{% url 'dashboard:admin_course_list' %}" class="btn btn-outline-dark btn-animate">
+                    <i class="fas fa-book me-1"></i>Courses
+                </a>
+                <a href="{% url 'dashboard:admin_enrollments' %}" class="btn btn-outline-success btn-animate">
+                    <i class="fas fa-user-graduate me-1"></i>All Enrollments
+                </a>
+                <a href="{% url 'dashboard:admin_quiz_list' %}" class="btn btn-outline-warning btn-animate">
+                    <i class="fas fa-question me-1"></i>Quizzes
+                </a>
+                <a href="{% url 'dashboard:admin_qna_list' %}" class="btn btn-outline-secondary btn-animate">
+                    <i class="fas fa-comments me-1"></i>Q&A
+                </a>
+                <a href="{% url 'dashboard:admin_pending_requests' %}" class="btn btn-outline-danger btn-animate">
+                    <i class="fas fa-clock me-1"></i>Pending Requests
+                    {% if total_pending_count > 0 %}
+                    <span class="badge bg-danger ms-1">{{ total_pending_count }}</span>
+                    {% endif %}
+                </a>
+                <a href="{% url 'dashboard:admin_users' %}" class="btn btn-outline-danger btn-animate">
+                    <i class="fas fa-users me-1"></i>Users
+                </a>
+                <a href="{% url 'dashboard:admin_quiz_attempts' %}" class="btn btn-outline-primary btn-animate">
+                    <i class="fas fa-history me-1"></i>Quiz Attempts
+                </a>
+                <a href="{% url 'dashboard:admin_qna_pending' %}" class="btn btn-outline-warning btn-animate">
+                    <i class="fas fa-reply me-1"></i>Pending Questions
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Recent Enrollments -->
+        <div class="col-lg-8" data-aos="fade-up" data-aos-delay="600">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white d-flex justify-content-between">
+                    <h6 class="fw-bold mb-0">Recent Enrollments</h6>
+                    <a href="{% url 'dashboard:admin_enrollments' %}" class="text-primary small">View All</a>
+                </div>
+                <div class="table-responsive">
+                    <table class="table mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th>Student</th>
+                                <th>Course</th>
+                                <th>Progress</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for enrollment in recent_enrollments %}
+                            <tr>
+                                <td>
+                                    <a href="{% url 'dashboard:admin_user_detail' enrollment.user.id %}">
+                                        {{ enrollment.user.username }}
+                                    </a>
+                                </td>
+                                <td>{{ enrollment.course.title|truncatechars:30 }}</td>
+                                <td>
+                                    <div class="progress" style="height: 6px; width: 80px;">
+                                        <div class="progress-bar bg-success" style="width: {{ enrollment.progress_percentage }}%;"></div>
+                                    </div>
+                                    <small>{{ enrollment.progress_percentage|floatformat:0 }}%</small>
+                                </td>
+                                <td>{{ enrollment.enrolled_at|date:"M d, Y" }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="4" class="text-center py-3 text-muted">No enrollments yet</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Recent Questions -->
+            <div class="card shadow-sm mt-4">
+                <div class="card-header bg-white d-flex justify-content-between">
+                    <h6 class="fw-bold mb-0">Recent Questions</h6>
+                    <a href="{% url 'dashboard:admin_qna_pending' %}" class="text-primary small">View Pending</a>
+                </div>
+                <div class="list-group list-group-flush">
+                    {% for question in recent_questions %}
+                    <a href="{% url 'qna:question_detail' question.pk %}" class="list-group-item list-group-item-action">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>{{ question.title|truncatechars:50 }}</strong>
+                                <br>
+                                <small class="text-muted">
+                                    by {{ question.user.username }} • {{ question.course.title }} • {{ question.created_at|timesince }} ago
+                                </small>
+                            </div>
+                            <span class="badge
+                                {% if question.status == 'PENDING' %}bg-warning
+                                {% elif question.status == 'ANSWERED' %}bg-success
+                                {% else %}bg-secondary{% endif %}">
+                                {{ question.get_status_display }}
+                            </span>
+                        </div>
+                    </a>
+                    {% empty %}
+                    <div class="p-3 text-center text-muted">No questions yet</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4" data-aos="fade-left" data-aos-delay="700">
+            <!-- Popular Courses -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h6 class="fw-bold mb-0">Popular Courses</h6>
+                </div>
+                <div class="list-group list-group-flush">
+                    {% for course in popular_courses %}
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>{{ course.title|truncatechars:25 }}</span>
+                        <span class="badge bg-primary">{{ course.enrollment_count }} enrolled</span>
+                    </div>
+                    {% empty %}
+                    <div class="p-3 text-center text-muted">No courses yet</div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Recent Users -->
+            <div class="card shadow-sm mt-4">
+                <div class="card-header bg-white">
+                    <h6 class="fw-bold mb-0">New Students</h6>
+                </div>
+                <div class="list-group list-group-flush">
+                    {% for student in recent_users %}
+                    <a href="{% url 'dashboard:admin_user_detail' student.id %}" class="list-group-item list-group-item-action">
+                        <div class="d-flex justify-content-between">
+                            <strong>{{ student.username }}</strong>
+                            <small class="text-muted">{{ student.date_joined|timesince }} ago</small>
+                        </div>
+                        <small class="text-muted">{{ student.email }}</small>
+                    </a>
+                    {% empty %}
+                    <div class="p-3 text-center text-muted">No students yet</div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Admin Navigation -->
+            <div class="card shadow-sm mt-4">
+                <div class="card-header bg-white">
+                    <h6 class="fw-bold mb-0">Admin Navigation</h6>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="{% url 'dashboard:admin_category_list' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-layer-group me-2 text-primary"></i>Manage Categories
+                    </a>
+                    <a href="{% url 'dashboard:admin_course_list' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-book me-2 text-success"></i>Manage Courses
+                    </a>
+                    <a href="{% url 'dashboard:admin_quiz_list' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-question me-2 text-warning"></i>Manage Quizzes
+                    </a>
+                    <a href="{% url 'dashboard:admin_qna_list' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-comments me-2 text-info"></i>All Questions
+                    </a>
+                    <a href="{% url 'dashboard:admin_qna_pending' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-clock me-2 text-danger"></i>Pending Questions
+                    </a>
+                    <a href="{% url 'dashboard:admin_users' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-users me-2 text-secondary"></i>Manage Users
+                    </a>
+                    <a href="{% url 'dashboard:admin_quiz_attempts' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-history me-2 text-primary"></i>Detailed Quiz Attempts
+                    </a>
+                    <a href="{% url 'dashboard:admin_export_full_system_csv' %}" class="list-group-item list-group-item-action bg-light fw-bold text-success">
+                        <i class="fas fa-file-download me-2"></i>Full System Report (All-in-One)
+                    </a>
+                    <a href="{% url 'dashboard:admin_enrollments' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-user-graduate me-2 text-success"></i>Detailed Enrollments
+                    </a>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

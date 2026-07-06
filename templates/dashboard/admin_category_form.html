@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <h2 class="fw-bold mb-4">{{ title }}</h2>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form method="POST">
+                {% csrf_token %}
+                <div class="mb-3"><label class="form-label fw-bold">Name *</label><input type="text" name="name" class="form-control" value="{{ category.name|default:'' }}" required></div>
+                <div class="mb-3"><label class="form-label fw-bold">Slug *</label><input type="text" name="slug" class="form-control" value="{{ category.slug|default:'' }}" required></div>
+                <div class="mb-3"><label class="form-label fw-bold">Description</label><textarea name="description" class="form-control" rows="3">{{ category.description|default:'' }}</textarea></div>
+                <div class="row">
+                    <div class="col-md-4 mb-3"><label class="form-label fw-bold">Icon Class</label><input type="text" name="icon" class="form-control" value="{{ category.icon|default:'fa-code' }}" placeholder="fa-python"></div>
+                    <div class="col-md-4 mb-3"><label class="form-label fw-bold">Color</label><input type="color" name="color" class="form-control" value="{{ category.color|default:'#007bff' }}"></div>
+                    <div class="col-md-4 mb-3"><label class="form-label fw-bold">Display Order</label><input type="number" name="order" class="form-control" value="{{ category.order|default:0 }}"></div>
+                </div>
+                <div class="mb-4 form-check"><input type="checkbox" name="is_active" class="form-check-input" id="is_active" {% if category.is_active %}checked{% elif not category %}checked{% endif %}><label class="form-check-label" for="is_active">Active</label></div>
+                <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>{{ action }}</button>
+                <a href="{% url 'dashboard:admin_category_list' %}" class="btn btn-secondary ms-2">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

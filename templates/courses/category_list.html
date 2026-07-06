@@ -1,0 +1,51 @@
+<!-- templates/courses/category_list.html -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="text-center mb-5" data-aos="fade-down">
+        <h1 class="fw-bold">Browse Categories</h1>
+        <p class="text-muted lead">Choose a programming language or topic to start learning</p>
+    </div>
+    
+    <div class="row g-4">
+        {% for category in categories %}
+        <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="{{ forloop.counter }}00">
+            <a href="{% url 'courses:course_by_category' category.slug %}" class="text-decoration-none">
+                <div class="card category-card h-100 border-0 shadow-sm hover-lift">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="category-icon rounded-circle me-3" 
+                                 style="background-color: {{ category.color }}20; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+                                <i class="fab {{ category.icon|default:'fa-code' }} fa-2x" style="color: {{ category.color }};"></i>
+                            </div>
+                            <div>
+                                <h5 class="fw-bold mb-1 text-dark">{{ category.name }}</h5>
+                                <span class="badge bg-light text-dark">
+                                    {{ category.course_count }} Courses
+                                </span>
+                            </div>
+                        </div>
+                        <p class="text-muted mb-0">{{ category.description|truncatewords:20 }}</p>
+                    </div>
+                    <div class="card-footer bg-transparent border-0 p-4 pt-0">
+                        <span class="text-primary fw-medium">
+                            Explore <i class="fas fa-arrow-right ms-1"></i>
+                        </span>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <i class="fas fa-folder-open fa-4x text-muted mb-3"></i>
+            <h4 class="text-muted">No categories available yet</h4>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

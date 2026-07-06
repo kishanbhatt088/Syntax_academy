@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <h2 class="fw-bold mb-4">{{ title }}</h2>
+    <div class="card shadow-sm"><div class="card-body">
+        <form method="POST">{% csrf_token %}
+            <div class="mb-3"><label class="form-label fw-bold">Title *</label><input type="text" name="title" class="form-control" value="{{ video.title|default:'' }}" required></div>
+            <div class="mb-3"><label class="form-label fw-bold">Description</label><textarea name="description" class="form-control" rows="3">{{ video.description|default:'' }}</textarea></div>
+            <div class="mb-3"><label class="form-label fw-bold">Video URL</label><input type="url" name="video_url" class="form-control" value="{{ video.video_url|default:'' }}" placeholder="https://youtube.com/embed/..."></div>
+            <div class="row">
+                <div class="col-md-4 mb-3"><label class="form-label fw-bold">Duration (min)</label><input type="number" name="duration" class="form-control" value="{{ video.duration|default:0 }}"></div>
+                <div class="col-md-4 mb-3"><label class="form-label fw-bold">Order</label><input type="number" name="order" class="form-control" value="{{ video.order|default:0 }}"></div>
+                <div class="col-md-4 mb-3 pt-4"><div class="form-check mt-2"><input type="checkbox" name="is_preview" class="form-check-input" {% if video.is_preview %}checked{% endif %}><label class="form-check-label">Preview Video</label></div></div>
+            </div>
+            <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>{{ action }}</button>
+        </form>
+    </div></div>
+</div>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <h2 class="fw-bold mb-4">{{ title }}</h2>
+    <div class="card shadow-sm"><div class="card-body">
+        <form method="POST">{% csrf_token %}
+            <div class="mb-3"><label class="form-label fw-bold">Category *</label><select name="category" class="form-select" required>{% for cat in categories %}<option value="{{ cat.id }}" {% if course.category_id == cat.id %}selected{% endif %}>{{ cat.name }}</option>{% endfor %}</select></div>
+            <div class="mb-3"><label class="form-label fw-bold">Title *</label><input type="text" name="title" class="form-control" value="{{ course.title|default:'' }}" required></div>
+            <div class="mb-3"><label class="form-label fw-bold">Slug *</label><input type="text" name="slug" class="form-control" value="{{ course.slug|default:'' }}" required></div>
+            <div class="mb-3"><label class="form-label fw-bold">Description *</label><textarea name="description" class="form-control" rows="4" required>{{ course.description|default:'' }}</textarea></div>
+            <div class="row">
+                <div class="col-md-6 mb-3"><label class="form-label fw-bold">Difficulty</label><select name="difficulty_level" class="form-select"><option value="BEGINNER" {% if course.difficulty_level == 'BEGINNER' %}selected{% endif %}>Beginner</option><option value="INTERMEDIATE" {% if course.difficulty_level == 'INTERMEDIATE' %}selected{% endif %}>Intermediate</option><option value="ADVANCED" {% if course.difficulty_level == 'ADVANCED' %}selected{% endif %}>Advanced</option></select></div>
+                <div class="col-md-6 mb-3"><label class="form-label fw-bold">Duration (hours)</label><input type="number" name="estimated_duration" class="form-control" value="{{ course.estimated_duration|default:0 }}"></div>
+            </div>
+            <div class="mb-3"><label class="form-label fw-bold">Prerequisites</label><textarea name="prerequisites" class="form-control" rows="2">{{ course.prerequisites|default:'' }}</textarea></div>
+            <div class="mb-3"><label class="form-label fw-bold">Learning Outcomes</label><textarea name="learning_outcomes" class="form-control" rows="2">{{ course.learning_outcomes|default:'' }}</textarea></div>
+            <div class="mb-4 form-check"><input type="checkbox" name="is_published" class="form-check-input" {% if course.is_published %}checked{% endif %}><label class="form-check-label">Published</label></div>
+            <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>{{ action }}</button>
+            <a href="{% url 'dashboard:admin_course_list' %}" class="btn btn-secondary ms-2">Cancel</a>
+        </form>
+    </div></div>
+</div>
+{% endblock %}

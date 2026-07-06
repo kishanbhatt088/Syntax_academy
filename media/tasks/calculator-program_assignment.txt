@@ -1,0 +1,6 @@
+Syntax Academy - Assignment
+
+Task: Calculator Program
+Description: Build a simple calculator that can perform addition, subtraction, multiplication, and division. Handle division by zero error.
+
+Please complete this task and submit it through the student portal.

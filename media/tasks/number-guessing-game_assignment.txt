@@ -1,0 +1,6 @@
+Syntax Academy - Assignment
+
+Task: Number Guessing Game
+Description: Create a number guessing game where the computer generates a random number and the user has to guess it. Provide hints (higher/lower).
+
+Please complete this task and submit it through the student portal.

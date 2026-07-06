@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center"><div class="col-md-6">
+        <div class="card border-danger shadow-sm">
+            <div class="card-header bg-danger text-white"><h4 class="mb-0">Delete Question</h4></div>
+            <div class="card-body">
+                <p>Are you sure you want to delete: <strong>{{ question.title }}</strong>?</p>
+                <p class="text-danger small">This will also delete all replies.</p>
+                <form method="POST">{% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                    <a href="{% url 'qna:question_detail' question.pk %}" class="btn btn-secondary ms-2">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div></div>
+</div>
+{% endblock %}

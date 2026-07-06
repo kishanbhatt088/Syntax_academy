@@ -1,0 +1,6 @@
+Syntax Academy - Assignment
+
+Task: Student Management System
+Description: Build a student management system with CRUD operations using ArrayList and file storage.
+
+Please complete this task and submit it through the student portal.

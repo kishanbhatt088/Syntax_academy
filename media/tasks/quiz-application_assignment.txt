@@ -1,0 +1,6 @@
+Syntax Academy - Assignment
+
+Task: Quiz Application
+Description: Build an interactive quiz application with timer, score tracking, and result display.
+
+Please complete this task and submit it through the student portal.

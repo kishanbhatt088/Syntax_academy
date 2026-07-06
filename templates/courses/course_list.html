@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}All Courses - Syntax Academy{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12" data-aos="fade-right">
+            <h1 class="display-4 mb-3">Explore Our Courses</h1>
+            <p class="lead text-muted">Find the perfect course to advance your skills</p>
+        </div>
+    </div>
+
+    <!-- Search and Filter Section -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <form method="get" class="d-flex gap-2">
+                <input type="text" name="search" class="form-control" 
+                       placeholder="Search courses..." 
+                       value="{{ request.GET.search }}">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-search"></i> Search
+                </button>
+            </form>
+        </div>
+        <div class="col-md-4">
+            <select class="form-select" onchange="location = this.value;">
+                <option value="?">All Categories</option>
+                {% for category in categories %}
+                <option value="?category={{ category.id }}" 
+                        {% if request.GET.category == category.id|stringformat:"s" %}selected{% endif %}>
+                    {{ category.name }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+
+    <!-- Courses Grid -->
+    {% if courses %}
+    <div class="row g-4">
+        {% for course in courses %}
+        <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="{{ forloop.counter }}00">
+            <div class="card h-100 shadow-sm hover-lift">
+                {% if course.thumbnail %}
+                <img src="{{ course.thumbnail.url }}" class="card-img-top" alt="{{ course.title }}" style="height: 200px; object-fit: cover;">
+                {% else %}
+                
+                {% endif %}
+                
+                <div class="card-body d-flex flex-column">
+                    <div class="mb-2">
+                        {% if course.category %}
+                        <span class="badge bg-info">{{ course.category.name }}</span>
+                        {% endif %}
+                        <span class="badge bg-secondary">{{ course.level }}</span>
+                    </div>
+                    
+                    <h5 class="card-title">{{ course.title }}</h5>
+                    <p class="card-text text-muted">{{ course.description|truncatewords:20 }}</p>
+                    
+                    <div class="mt-auto">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <small class="text-muted">
+                                <i class="bi bi-person"></i> {{ course.instructor.get_full_name }}
+                            </small>
+                            <small class="text-muted">
+                                <i class="bi bi-clock"></i> {{ course.duration }} hours
+                            </small>
+                        </div>
+                        
+                        {% if course.price > 0 %}
+                        <div class="mb-2">
+                            <strong class="text-primary">${{ course.price }}</strong>
+                        </div>
+                        {% else %}
+                        <div class="mb-2">
+                            <strong class="text-success">Free</strong>
+                        </div>
+                        {% endif %}
+                        
+                        <a href="{% url 'courses:course_detail' course.slug %}" class="btn btn-primary w-100 btn-animate">
+                            View Course
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if is_paginated %}
+    <nav aria-label="Page navigation" class="mt-5">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page=1">First</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+            </li>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                <li class="page-item active">
+                    <span class="page-link">{{ num }}</span>
+                </li>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                </li>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+
+    {% else %}
+    <!-- No Courses Found -->
+    <div class="row">
+        <div class="col-12 text-center py-5">
+            <i class="bi bi-inbox" style="font-size: 4rem; color: #ccc;"></i>
+            <h3 class="mt-3">No Courses Found</h3>
+            <p class="text-muted">Try adjusting your search or filters</p>
+            <a href="{% url 'courses:course_list' %}" class="btn btn-primary">View All Courses</a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

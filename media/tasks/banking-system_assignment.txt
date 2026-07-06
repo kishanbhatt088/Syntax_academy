@@ -1,0 +1,6 @@
+Syntax Academy - Assignment
+
+Task: Banking System
+Description: Create a simple banking system with deposit, withdrawal, and balance checking features using OOP concepts.
+
+Please complete this task and submit it through the student portal.

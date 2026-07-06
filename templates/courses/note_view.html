@@ -1,0 +1,72 @@
+<!-- templates/courses/note_view.html -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <!-- Main Content -->
+        <div class="col-lg-8">
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'courses:course_detail' course.slug %}">{{ course.title }}</a></li>
+                    <li class="breadcrumb-item active">{{ note.title }}</li>
+                </ol>
+            </nav>
+            
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-5">
+                    <h1 class="fw-bold mb-4">{{ note.title }}</h1>
+                    
+                    <div class="note-content">
+                        {{ note.content|linebreaks }}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Navigation -->
+            <div class="d-flex justify-content-between mt-4">
+                {% if all_notes %}
+                {% with all_notes|first as first_note %}
+                {% if note != first_note %}
+                <a href="#" class="btn btn-outline-primary">
+                    <i class="fas fa-arrow-left me-1"></i>Previous
+                </a>
+                {% else %}
+                <span></span>
+                {% endif %}
+                {% endwith %}
+                
+                {% with all_notes|last as last_note %}
+                {% if note != last_note %}
+                <a href="#" class="btn btn-primary">
+                    Next<i class="fas fa-arrow-right ms-1"></i>
+                </a>
+                {% endif %}
+                {% endwith %}
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm sticky-top" style="top: 100px;">
+                <div class="card-header bg-white">
+                    <h6 class="mb-0 fw-bold">Course Notes</h6>
+                </div>
+                <div class="list-group list-group-flush">
+                    {% for n in all_notes %}
+                    <a href="{% url 'courses:note_view' course.slug n.slug %}" 
+                       class="list-group-item list-group-item-action {% if n.id == note.id %}active{% endif %}">
+                        {{ n.order }}. {{ n.title }}
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

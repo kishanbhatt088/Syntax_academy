@@ -1,0 +1,6 @@
+Syntax Academy - Assignment
+
+Task: Weather App
+Description: Create a weather application that fetches weather data from an API and displays it beautifully.
+
+Please complete this task and submit it through the student portal.

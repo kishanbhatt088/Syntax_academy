@@ -1,0 +1,6 @@
+Syntax Academy - Assignment
+
+Task: Hello World Program
+Description: Write your first Java program that prints "Hello, World!" and your name.
+
+Please complete this task and submit it through the student portal.

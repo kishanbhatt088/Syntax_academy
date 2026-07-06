@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}My Progress{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <h2 class="fw-bold mb-4">My Learning Progress</h2>
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100"><div class="card-header bg-white d-flex align-items-center"><i class="fas fa-play-circle text-primary me-2"></i><h5 class="mb-0">Video Progress</h5></div>
+            <div class="list-group list-group-flush">
+                {% for progress in video_progress %}
+                <div class="list-group-item d-flex justify-content-between align-items-center">
+                    <span class="text-truncate" style="max-width: 70%;">{{ progress.video.title }}</span>
+                    {% if progress.is_completed %}<span class="badge bg-success">Completed</span>{% else %}<span class="badge bg-warning text-dark">In Progress</span>{% endif %}
+                </div>
+                {% empty %}<div class="list-group-item text-muted text-center py-3">No videos watched yet.</div>
+                {% endfor %}
+            </div></div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100"><div class="card-header bg-white d-flex align-items-center"><i class="fas fa-file-alt text-info me-2"></i><h5 class="mb-0">Note Progress</h5></div>
+            <div class="list-group list-group-flush">
+                {% for progress in note_progress %}
+                <div class="list-group-item d-flex justify-content-between align-items-center">
+                    <span class="text-truncate" style="max-width: 70%;">{{ progress.note.title }}</span>
+                    {% if progress.is_read %}<span class="badge bg-success">Read</span>{% else %}<span class="badge bg-secondary">Unread</span>{% endif %}
+                </div>
+                {% empty %}<div class="list-group-item text-muted text-center py-3">No notes read yet.</div>
+                {% endfor %}
+            </div></div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100"><div class="card-header bg-white d-flex align-items-center"><i class="fas fa-tasks text-warning me-2"></i><h5 class="mb-0">Task Progress</h5></div>
+            <div class="list-group list-group-flush">
+                {% for progress in task_progress %}
+                <div class="list-group-item d-flex justify-content-between align-items-center">
+                    <span class="text-truncate" style="max-width: 70%;">{{ progress.task.title }}</span>
+                    {% if progress.is_completed %}<span class="badge bg-success">Completed</span>{% else %}<span class="badge bg-secondary">Pending</span>{% endif %}
+                </div>
+                {% empty %}<div class="list-group-item text-muted text-center py-3">No tasks performed yet.</div>
+                {% endfor %}
+            </div></div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100"><div class="card-header bg-white d-flex align-items-center"><i class="fas fa-question-circle text-success me-2"></i><h5 class="mb-0">Quiz Results</h5></div>
+            <div class="list-group list-group-flush">
+                {% for result in quiz_results %}
+                <div class="list-group-item d-flex justify-content-between align-items-center">
+                    <span class="text-truncate" style="max-width: 70%;">{{ result.quiz.title }}</span>
+                    <span class="badge {% if result.is_passed %}bg-success{% else %}bg-danger{% endif %}">{{ result.score|floatformat:0 }}%</span>
+                </div>
+                {% empty %}<div class="list-group-item text-muted text-center py-3">No quizzes taken yet.</div>
+                {% endfor %}
+            </div></div>
+        </div>
+    </div>
+</div>
+{% endblock %}

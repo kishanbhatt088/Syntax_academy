@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}Questions - {{ quiz.title }}{% endblock %}
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between mb-4">
+        <div>
+            <h2 class="fw-bold">Quiz Questions</h2>
+            <p class="text-muted">{{ quiz.title }} | {{ quiz.course.title }}</p>
+        </div>
+        <a href="{% url 'dashboard:admin_quiz_list' %}" class="btn btn-outline-secondary">Back to Quizzes</a>
+    </div>
+    {% for question in questions %}
+    <div class="card shadow-sm mb-3">
+        <div class="card-header bg-white">
+            <strong>Q{{ question.order }}: {{ question.question_text }}</strong>
+            <span class="badge bg-primary float-end">{{ question.points }} points</span>
+        </div>
+        <div class="card-body">
+            <ul class="list-group list-group-flush">
+                {% for choice in question.choices.all %}
+                <li class="list-group-item {% if choice.is_correct %}list-group-item-success{% endif %}">
+                    {% if choice.is_correct %}<i class="fas fa-check-circle text-success me-2"></i>{% else %}<i class="fas fa-circle text-muted me-2"></i>{% endif %}
+                    {{ choice.choice_text }}
+                </li>
+                {% endfor %}
+            </ul>
+            {% if question.explanation %}
+            <div class="mt-2 p-2 bg-light rounded">
+                <small><i class="fas fa-info-circle me-1"></i><strong>Explanation:</strong> {{ question.explanation }}</small>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% empty %}
+    <div class="alert alert-info">No questions in this quiz yet.</div>
+    {% endfor %}
+</div>
+{% endblock %}

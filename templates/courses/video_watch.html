@@ -1,0 +1,240 @@
+<!-- templates/courses/video_watch.html -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .video-container {
+        position: relative;
+        padding-bottom: 56.25%;
+        height: 0;
+        overflow: hidden;
+        background: #000;
+        border-radius: 8px;
+    }
+    .video-container video,
+    .video-container iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <!-- Video Player -->
+        <div class="col-lg-8">
+            <nav aria-label="breadcrumb" class="mb-3">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'courses:course_detail' course.slug %}">{{ course.title }}</a></li>
+                    <li class="breadcrumb-item active">{{ video.title }}</li>
+                </ol>
+            </nav>
+            
+            <!-- Video Player -->
+            <div class="video-container mb-4">
+                {% if video.video_file and video.video_file.name %}
+                <video id="videoPlayer" controls>
+                    <source src="{{ video.video_file.url }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                {% elif video.embed_url %}
+                <!-- YouTube API will replace this div with an iframe -->
+                <div id="youtubePlayer" data-embed-url="{{ video.embed_url }}"></div>
+                {% else %}
+                <div class="d-flex align-items-center justify-content-center h-100 text-white">
+                    <div class="text-center">
+                        <i class="fas fa-video-slash fa-3x mb-3 opacity-50"></i>
+                        <p class="mb-0">No video available for this lesson.</p>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            
+            <!-- Video Info -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body">
+                    <h4 class="fw-bold mb-2">{{ video.title }}</h4>
+                    <div class="d-flex gap-3 text-muted mb-3">
+
+                        <span><i class="fas fa-book me-1"></i>{{ course.title }}</span>
+                    </div>
+                    {% if video.description %}
+                    <p class="text-muted">{{ video.description }}</p>
+                    {% endif %}
+                    
+                    <!-- Mark Complete Button -->
+                    <button id="markCompleteBtn" class="btn {% if progress.is_completed %}btn-success{% else %}btn-outline-success{% endif %}">
+                        {% if progress.is_completed %}
+                        <i class="fas fa-check me-1"></i>Completed
+                        {% else %}
+                        <i class="fas fa-check me-1"></i>Mark as Complete
+                        {% endif %}
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sidebar - Video List -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white">
+                    <h6 class="mb-0 fw-bold">Course Videos</h6>
+                </div>
+                <div class="list-group list-group-flush" style="max-height: 600px; overflow-y: auto;">
+                    {% for v in all_videos %}
+                    <a href="{% url 'courses:video_watch' course.slug v.slug %}" 
+                       class="list-group-item list-group-item-action {% if v.id == video.id %}active{% endif %}">
+                        <div class="d-flex align-items-center">
+                            <span class="badge bg-light text-dark rounded-circle me-2">{{ v.order }}</span>
+                            <div class="flex-grow-1">
+                                <p class="mb-0 fw-medium">{{ v.title }}</p>
+                                <small class="text-{% if v.id == video.id %}light{% else %}muted{% endif %}">
+                                    {{ v.duration }} min
+                                </small>
+                            </div>
+                            {% if v.id == video.id %}
+                            <i class="fas fa-play"></i>
+                            {% endif %}
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Load YouTube IFrame API -->
+<script src="https://www.youtube.com/iframe_api"></script>
+<script>
+let ytPlayer;
+
+function extractVideoId(embedUrl) {
+    if (!embedUrl) return null;
+    const parts = embedUrl.split('/embed/');
+    return parts.length > 1 ? parts[1].split('?')[0] : null;
+}
+
+// This function is automatically called by YouTube API when it's ready
+function onYouTubeIframeAPIReady() {
+    const ytContainer = document.getElementById('youtubePlayer');
+    if (ytContainer) {
+        const embedUrl = ytContainer.getAttribute('data-embed-url');
+        const videoId = extractVideoId(embedUrl);
+        
+        if (videoId) {
+            ytPlayer = new YT.Player('youtubePlayer', {
+                height: '100%',
+                width: '100%',
+                videoId: videoId,
+                playerVars: {
+                    'playsinline': 1,
+                    'rel': 0,
+                    'modestbranding': 1,
+                    // The origin parameter fixes many Error 153 issues
+                    'origin': window.location.origin
+                },
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        }
+    }
+}
+
+let watchTime = {{ progress.watch_time|default:0 }};
+let lastPosition = {{ progress.last_position|default:0 }};
+let ytProgressInterval;
+
+function saveProgress(isCompleted) {
+    fetch('{% url "courses:update_video_progress" video.id %}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: `watch_time=${watchTime}&last_position=${lastPosition}&is_completed=${isCompleted}`
+    });
+}
+
+function markAsCompletedUI() {
+    const btn = document.getElementById('markCompleteBtn');
+    if (btn) {
+        btn.classList.remove('btn-outline-success');
+        btn.classList.add('btn-success');
+        btn.innerHTML = '<i class="fas fa-check me-1"></i>Completed';
+    }
+}
+
+// YouTube Player Callbacks
+function onPlayerReady(event) {
+    if (lastPosition > 0) {
+        event.target.seekTo(lastPosition);
+    }
+}
+
+function onPlayerStateChange(event) {
+    // Playing
+    if (event.data == YT.PlayerState.PLAYING) {
+        ytProgressInterval = setInterval(() => {
+            watchTime++;
+            lastPosition = Math.floor(ytPlayer.getCurrentTime());
+            if (watchTime % 30 === 0) saveProgress(false);
+        }, 1000);
+    } 
+    // Paused or Ended
+    else {
+        clearInterval(ytProgressInterval);
+        if (event.data == YT.PlayerState.PAUSED) {
+            saveProgress(false);
+        } else if (event.data == YT.PlayerState.ENDED) {
+            saveProgress(true);
+            markAsCompletedUI();
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const html5Video = document.getElementById('videoPlayer');
+    const markCompleteBtn = document.getElementById('markCompleteBtn');
+    
+    // HTML5 Video Logic
+    if (html5Video) {
+        if (lastPosition > 0) html5Video.currentTime = lastPosition;
+        
+        setInterval(function() {
+            if (!html5Video.paused) {
+                watchTime++;
+                lastPosition = Math.floor(html5Video.currentTime);
+                if (watchTime % 30 === 0) saveProgress(false);
+            }
+        }, 1000);
+        
+        html5Video.addEventListener('pause', () => saveProgress(false));
+        html5Video.addEventListener('ended', () => {
+            saveProgress(true);
+            markAsCompletedUI();
+        });
+    }
+    
+    // Manual Mark Complete Button
+    if (markCompleteBtn) {
+        markCompleteBtn.addEventListener('click', function() {
+            saveProgress(true);
+            markAsCompletedUI();
+        });
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,6 @@
+Syntax Academy - Assignment
+
+Task: Todo List App
+Description: Build a todo list application with add, delete, and mark complete features using DOM manipulation.
+
+Please complete this task and submit it through the student portal.

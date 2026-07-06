@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}Manage Quizzes{% endblock %}
+{% block content %}
+<div class="container-fluid py-4">
+    <h2 class="fw-bold mb-4">Manage Quizzes</h2>
+    <div class="card shadow-sm"><div class="table-responsive"><table class="table table-hover mb-0">
+        <thead class="bg-light"><tr><th>Quiz</th><th>Course</th><th>Questions</th><th>Attempts</th><th>Pass Score</th><th>Actions</th></tr></thead>
+        <tbody>{% for quiz in quizzes %}<tr>
+            <td>{{ quiz.title }}</td><td>{{ quiz.course.title|truncatechars:25 }}</td>
+            <td><span class="badge bg-primary">{{ quiz.question_count }}</span></td>
+            <td><span class="badge bg-info">{{ quiz.attempt_count }}</span></td>
+            <td>{{ quiz.passing_score }}%</td>
+            <td><a href="{% url 'dashboard:admin_question_list' quiz.pk %}" class="btn btn-sm btn-info"><i class="fas fa-list me-1"></i>Questions</a> <a href="{% url 'dashboard:admin_quiz_attempts' %}?quiz_id={{ quiz.pk }}" class="btn btn-sm btn-primary"><i class="fas fa-history me-1"></i>Attempts</a></td>
+        </tr>{% empty %}<tr><td colspan="6" class="text-center py-4">No quizzes yet.</td></tr>{% endfor %}</tbody>
+    </table></div></div>
+</div>
+{% endblock %}

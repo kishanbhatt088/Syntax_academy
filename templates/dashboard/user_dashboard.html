@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}My Dashboard{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <h2 class="fw-bold mb-4" data-aos="fade-right">Welcome, {{ user.first_name|default:user.username }}!</h2>
+    <div class="row g-4">
+        <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+            <div class="card shadow-sm text-center h-100 hover-lift"><div class="card-body">
+                <i class="fas fa-graduation-cap fa-3x text-primary mb-3"></i>
+                <h5>My Courses</h5>
+                <a href="{% url 'dashboard:user_courses' %}" class="btn btn-primary mt-2 btn-animate">View Courses</a>
+            </div></div>
+        </div>
+        <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+            <div class="card shadow-sm text-center h-100 hover-lift"><div class="card-body">
+                <i class="fas fa-chart-line fa-3x text-success mb-3"></i>
+                <h5>My Progress</h5>
+                <a href="{% url 'dashboard:user_progress' %}" class="btn btn-success mt-2 btn-animate">View Progress</a>
+            </div></div>
+        </div>
+        <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+            <div class="card shadow-sm text-center h-100 hover-lift"><div class="card-body">
+                <i class="fas fa-comments fa-3x text-info mb-3"></i>
+                <h5>Q&A Forum</h5>
+                <a href="{% url 'qna:question_list' %}" class="btn btn-info mt-2 btn-animate">Ask Question</a>
+            </div></div>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-md-6" data-aos="fade-up" data-aos-delay="400">
+            <div class="card shadow-sm"><div class="card-header bg-white"><h5 class="mb-0">Recent Enrollments</h5></div>
+            <div class="list-group list-group-flush">
+                {% for enrollment in enrollments %}
+                <a href="{% url 'courses:course_detail' enrollment.course.slug %}" class="list-group-item list-group-item-action">
+                    {{ enrollment.course.title }} <span class="badge bg-primary float-end">{{ enrollment.progress_percentage|floatformat:0 }}%</span>
+                </a>
+                {% empty %}<div class="list-group-item text-muted">No courses yet. <a href="{% url 'courses:course_list' %}">Browse courses!</a></div>
+                {% endfor %}
+            </div></div>
+        </div>
+        <div class="col-md-6" data-aos="fade-up" data-aos-delay="500">
+            <div class="card shadow-sm"><div class="card-header bg-white"><h5 class="mb-0">Recent Quiz Results</h5></div>
+            <div class="list-group list-group-flush">
+                {% for attempt in quiz_attempts %}
+                <div class="list-group-item d-flex justify-content-between">
+                    <span>{{ attempt.quiz.title }}</span>
+                    <span class="badge {% if attempt.is_passed %}bg-success{% else %}bg-danger{% endif %}">{{ attempt.score|floatformat:0 }}%</span>
+                </div>
+                {% empty %}<div class="list-group-item text-muted">No quiz attempts yet.</div>
+                {% endfor %}
+            </div></div>
+        </div>
+    </div>
+</div>
+{% endblock %}
